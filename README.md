@@ -2,7 +2,7 @@ Virtual Realm is an ecommerce site developed using the MERN (MongoDB, Express.js
 
 ## Features
 
-- **User Registration:** ShopCart allows users to register as customers or sellers, enabling a tailored shopping experience.
+- **User Registration:** It allows users to register as customers or sellers, enabling a tailored shopping experience.
 
 - **Cart System:** Customers can add products to their cart for easy checkout. The cart allows them to review and manage their selections before completing the purchase.
 
