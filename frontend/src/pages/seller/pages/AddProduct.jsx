@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Box, CircularProgress, Stack, TextField } from '@mui/material';
-import Popup from '../../../components/Popup';
-import { BlueButton } from '../../../utils/buttonStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { addStuff } from '../../../redux/userHandle';
+import { useEffect, useState } from "react";
+import { Box, CircularProgress, Stack, TextField } from "@mui/material";
+import Popup from "../../../components/Popup";
+import { BlueButton } from "../../../utils/buttonStyles";
+import { useDispatch, useSelector } from "react-redux";
+import { addStuff } from "../../../redux/userHandle";
 import altImage from "../../../assets/altimg.png";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const AddProduct = () => {
-
   const dispatch = useDispatch();
 
-  const { currentUser, status, response, error } = useSelector(state => state.user);
+  const { currentUser, status, response, error } = useSelector(
+    (state) => state.user,
+  );
 
   const [productName, setProductName] = useState("");
   const [mrp, setMrp] = useState("");
@@ -22,7 +23,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [tagline, setTagline] = useState("");
-  const seller = currentUser._id
+  const seller = currentUser._id;
 
   const [loader, setLoader] = useState(false);
   const [message, setMessage] = useState("");
@@ -40,13 +41,13 @@ const AddProduct = () => {
     category,
     description,
     tagline,
-    seller
+    seller,
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
     setLoader(true);
-    console.log(fields);
+
     dispatch(addStuff("ProductCreate", fields));
   };
 
@@ -55,11 +56,11 @@ const AddProduct = () => {
       setLoader(false);
       setShowPopup(true);
       setMessage("Done Successfully");
-    } else if (status === 'failed') {
+    } else if (status === "failed") {
       setMessage(response);
       setShowPopup(true);
       setLoader(false);
-    } else if (status === 'error') {
+    } else if (status === "error") {
       setLoader(false);
       setMessage("Network Error");
       setShowPopup(true);
@@ -70,27 +71,27 @@ const AddProduct = () => {
     <>
       <Box
         sx={{
-          flex: '1 1 auto',
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'center'
+          flex: "1 1 auto",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Box
           sx={{
             maxWidth: 550,
             px: 3,
-            py: '30px',
-            width: '100%'
+            py: "30px",
+            width: "100%",
           }}
         >
           <div>
             <Stack spacing={1} sx={{ mb: 3 }}>
-              {
-                productImage
-                  ? <ProductImage src={productImage} alt="" />
-                  : <ProductImage src={altImage} alt="" />
-              }
+              {productImage ? (
+                <ProductImage src={productImage} alt="" />
+              ) : (
+                <ProductImage src={altImage} alt="" />
+              )}
             </Stack>
             <form onSubmit={submitHandler}>
               <Stack spacing={3}>
@@ -194,13 +195,21 @@ const AddProduct = () => {
                 type="submit"
                 disabled={loader}
               >
-                {loader ? <CircularProgress size={24} color="inherit" /> : "Add"}
+                {loader ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Add"
+                )}
               </BlueButton>
             </form>
           </div>
         </Box>
       </Box>
-      <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
+      <Popup
+        message={message}
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+      />
     </>
   );
 };

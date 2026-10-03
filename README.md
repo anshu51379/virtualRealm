@@ -1,64 +1,73 @@
-Virtual Realm is an ecommerce site developed using the MERN (MongoDB, Express.js, React, Node.js) stack. It offers a user-friendly and efficient shopping experience for customers, while providing sellers with essential tools to manage their products and sales.
+# Virtual Realm
 
-## Features
+An ecommerce marketplace for customers and independent sellers, built with React, Express, and MongoDB. This modernization keeps the original collections and API route names while replacing the retired Create React App tooling and redesigning the shopping experience.
 
-- **User Registration:** It allows users to register as customers or sellers, enabling a tailored shopping experience.
+## What's new
 
-- **Cart System:** Customers can add products to their cart for easy checkout. The cart allows them to review and manage their selections before completing the purchase.
+- React 19, Vite 8, React Router 7, Redux Toolkit 2, Material UI 7, Express 5, and Mongoose 9 on Node 24 LTS.
+- Responsive storefront, original local product illustrations, category filters, search, sorting, product detail pages, and shopper/seller sign-in.
+- Bearer authentication, role and ownership checks, limited account/product updates, validated order lines, and prices calculated from the database.
+- Cash-on-delivery checkout; cart contents remain intact when order submission fails. No card numbers or CVVs are collected.
+- Seller metrics calculated from actual orders and products, replacing the old sample charts. Order value includes unpaid orders and is not collected revenue.
+- A shopping helper with catalogue/budget matching, plus a server-only provider adapter for future AI enhancements.
+- Locked workspace dependencies, a production build, API integration tests, browser tests, and GitHub Actions checks.
 
-- **Product Search:** It offers a search functionality where customers can find products by name or browse through categories such as Electronics, Clothes, Kitchen, and more.
+## Quick preview (no database required)
 
-- **Reviews and Ratings:** Customers can leave reviews and ratings (out of 5) for products they've purchased, providing valuable feedback for sellers and building trust within the community.
-
-- **Seller Dashboard:** Sellers have access to a dedicated dashboard where they can manage their products, view sales data, and gain insights into their store's performance through data visualization.
-
-- **Product Management:** Sellers can add products with detailed information and set their prices. They can also check which customers have added their products to their carts.
-
-- **Order Tracking:** Sellers can monitor the products ordered by customers, helping them stay organized and fulfill orders efficiently.
-
-## Technologies Used
-
-- Frontend: React.js, Material UI, Redux Toolkit, Styled Components
-- Backend: Node.js, Express.js, JWT Token
-- Database: MongoDB
-- Data Visualization: React Apexcharts
-
-<br>
-
-# Installation
+Install Node 24, then run from the repository root:
 
 ```sh
-git clone https://github.com/anshu51379/virtualRealm.git
+npm ci
+npm run demo
 ```
-Open 2 terminals in separate windows/tabs.
 
-Terminal 1: Setting Up Backend 
-<br><br>
-Create a env file and then add your mongodb link and also jwt secret key
+Open http://127.0.0.1:3000. The preview uses an explicitly labelled sample collection. Browsing and the shopping helper work; registration, cart persistence, and orders require the database mode. Preview mode cannot start with `NODE_ENV=production`.
+
+## Full application
+
+Copy `backend/.env.example` to `backend/.env`. Set:
+
+- `MONGO_URL`: your MongoDB connection string (MongoDB 8 recommended; back up an existing database before upgrading its server).
+- `SECRET_KEY`: a random secret of at least 32 characters. Generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
+- `CLIENT_ORIGIN`: permitted frontend origins, separated by commas.
+
+Then run:
+
 ```sh
-cd backend
-npm install
-npm start
+npm ci
+npm run dev
 ```
 
-Terminal 2: Setting Up Frontend
+The web app runs on http://127.0.0.1:3000 and the API on port 5000. Vite proxies `/api` to the API server. `VITE_API_URL` is optional; set it in `frontend/.env` only when using an API on another origin. Only variables beginning with `VITE_` are exposed to the browser; never put an AI key or JWT secret there.
+
+Register a seller and add products using the seller dashboard. Register a shopper, add products to the bag, complete a shipping address, and place a cash-on-delivery order. The server supplies the buyer identity, seller identity, product prices, and pending payment status.
+
+Optional sample products can be inserted into a development database after creating a seller. Set `SEED_SELLER_ID` to that seller's ID and run `npm run seed`. The seed creates no passwords and preserves existing products.
+
+## AI extension
+
+`POST /ai/recommend` accepts `{ "query": "headphones under 3000" }`. Without provider configuration, it returns matching public products with `mode: "catalog-search"`; this is deterministic search, not an LLM. The helper labels this distinction in the UI.
+
+To enable model explanations, set `AI_API_KEY`, `AI_MODEL`, and optionally `AI_BASE_URL` in the **backend environment**. The adapter supports an HTTPS chat-completions endpoint. A provider request receives only the shopper's query and public product names, categories, and prices. Keys remain server-side. Provider failures/timeouts fall back to catalogue search. Suggestions never place orders or change prices.
+
+See [docs/AI-ROADMAP.md](docs/AI-ROADMAP.md) for the extension boundary and next steps. A real provider was not called during automated checks; validate your selected provider/model before enabling it publicly.
+
+## Checks
 
 ```sh
-cd frontend
-npm install
-npm start
-```
-Create a env file and then write 
-
-```env
-REACT_APP_BASE_URL = http://localhost:5000
+npm test
+npm run build
+npx playwright install --with-deps chromium
+npm run test:e2e
+npm audit
 ```
 
-Now, navigate to `localhost:3000` in your browser. 
-The Backend API will be running at `localhost:5000`.
+API integration tests use an isolated ephemeral MongoDB instance, never your configured database. Browser checks cover desktop/mobile browsing, category filtering, product details, preview sign-in errors, helper results, and malformed saved sessions. GitHub Actions runs the same checks.
 
-<br>
+## Production hosting
 
-# Deployment
-* Vercel - client side
-* Railway - server side
+Run `npm run build` and serve `frontend/dist` from a static host. Configure SPA rewrites to `index.html` and route `/api/*` to the backend with the `/api` prefix removed, or set `VITE_API_URL` before building. Start the API with `npm start`, using production environment variables and MongoDB. Terminate HTTPS at the hosting platform. `/health` reports API/database readiness.
+
+This change does not deploy a live store. Before accepting online payments, integrate a payment gateway with server-verified webhooks. Cash-on-delivery orders are deliberately recorded as **Pending**, and no confirmation emails are claimed or sent. Inventory reservation, fulfillment status editing, refunds, and transactional notifications remain future features. Existing product/order schemas remain compatible; historical payment claims are not rewritten.
+
+For multiple API replicas, replace the in-process rate-limit store with a shared store. JWTs use the existing browser storage approach; cookie-based sessions with CSRF protection are a future hardening step. If changing the JWT secret, existing users must sign in again.

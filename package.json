@@ -1,0 +1,25 @@
+{
+  "name": "virtual-realm",
+  "private": true,
+  "version": "2.0.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "demo": "concurrently -k -n api,web \"npm run demo -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w frontend",
+    "start": "npm start -w backend",
+    "test": "npm test -w backend",
+    "test:e2e": "playwright test",
+    "seed": "npm run seed -w backend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "@playwright/test": "^1.63.0"
+  }
+}
