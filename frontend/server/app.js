@@ -6,13 +6,19 @@ const mongoose = require("mongoose");
 const routes = require("./routes/route");
 const { demoProducts } = require("./services/catalog");
 const { recommend } = require("./services/ai");
-const createApp = ({ demo = false } = {}) => {
+const createApp = ({ demo = false, trustProxy = false } = {}) => {
   const app = express();
   app.disable("x-powered-by");
+  app.set("trust proxy", trustProxy);
+  // Authenticated API responses must never be cached by an intermediary.
+  app.use((req, res, next) => {
+    res.set("Cache-Control", "no-store");
+    next();
+  });
   app.use(helmet());
   app.use(
     cors({
-      origin: (process.env.CLIENT_ORIGIN || "http://localhost:3000").split(","),
+      origin: (process.env.CLIENT_ORIGIN || "http://localhost:3000,http://127.0.0.1:3000").split(",").map((origin) => origin.trim()),
     }),
   );
   app.use(express.json({ limit: "1mb" }));
@@ -56,7 +62,7 @@ const createApp = ({ demo = false } = {}) => {
     }),
     async (req, res) => {
       if (
-        typeof req.body.query !== "string" ||
+        typeof req.body?.query !== "string" ||
         !req.body.query.trim() ||
         req.body.query.length > 500
       )

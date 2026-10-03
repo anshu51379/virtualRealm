@@ -4,10 +4,8 @@ const fs = require("node:fs");
 const helmet = require("helmet");
 const { createApp } = require("./app");
 
-function createServer({ demo = false, frontendDir = path.resolve(__dirname, "../frontend/dist") } = {}) {
+function createServer({ demo = false, frontendDir = path.resolve(__dirname, "../dist") } = {}) {
   const api = createApp({ demo });
-  if (!fs.existsSync(path.join(frontendDir, "index.html"))) return api;
-
   const server = express();
   server.disable("x-powered-by");
   server.use(helmet({ contentSecurityPolicy: { directives: {
@@ -21,6 +19,10 @@ function createServer({ demo = false, frontendDir = path.resolve(__dirname, "../
     if (legacyRead || !["GET", "HEAD"].includes(req.method)) return api(req, res, next);
     next();
   });
+  if (!fs.existsSync(path.join(frontendDir, "index.html"))) {
+    server.use((req, res) => res.status(404).json({ message: "Not found." }));
+    return server;
+  }
   server.use(express.static(frontendDir));
   server.get("/{*route}", (req, res, next) => {
     // Missing assets must not receive index.html with a successful status.

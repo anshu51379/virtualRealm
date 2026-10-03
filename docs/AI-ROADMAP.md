@@ -1,6 +1,6 @@
 # AI implementation space
 
-The first extension point is `backend/services/ai.js`: `shortlist(query, products)` retrieves real catalogue matches, and `recommend(query, products)` optionally asks a provider to explain them. `frontend/src/components/ShoppingAssistant.jsx` is the user interface. Provider configuration is server-only and request rates are limited.
+The first extension point is `frontend/server/services/ai.js`: `shortlist(query, products)` retrieves real catalogue matches, and `recommend(query, products)` optionally asks a provider to explain them. `frontend/src/components/ShoppingAssistant.jsx` is the user interface. Provider configuration is server-only and request rates are limited. The same adapter runs in local Node hosting and the deployed `/api` function.
 
 ## Next additions
 

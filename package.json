@@ -7,20 +7,28 @@
   },
   "workspaces": [
     "frontend",
-    "backend"
+    "frontend/server"
   ],
   "scripts": {
-    "dev": "concurrently -k -n api,web \"npm run dev -w backend\" \"npm run dev -w frontend\"",
-    "demo": "concurrently -k -n api,web \"npm run demo -w backend\" \"npm run dev -w frontend\"",
-    "build": "npm run build -w frontend",
+    "dev": "concurrently -k -n api,web \"npm run dev -w backend\" \"npm run dev -w @virtual-realm/web\"",
+    "demo": "concurrently -k -n api,web \"npm run demo -w backend\" \"npm run dev -w @virtual-realm/web\"",
+    "build": "npm run build -w @virtual-realm/web",
     "start": "npm start -w backend",
     "test": "npm test -w backend",
     "test:e2e": "playwright test",
     "check:frontend-deploy": "node scripts/check-frontend-deploy.mjs",
-    "seed": "npm run seed -w backend"
+    "seed": "npm run seed -w backend",
+    "setup": "node scripts/setup-local.mjs"
   },
   "devDependencies": {
-    "concurrently": "^10.0.5",
-    "@playwright/test": "^1.63.0"
+    "@playwright/test": "^1.63.0",
+    "@vercel/nft": "^1.11.0",
+    "@vercel/routing-utils": "^6.6.0",
+    "concurrently": "^10.0.5"
+  },
+  "overrides": {
+    "@vercel/routing-utils": {
+      "path-to-regexp": "^6.3.0"
+    }
   }
 }

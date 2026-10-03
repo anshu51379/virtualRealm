@@ -2,7 +2,21 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
   "installCommand": "npm ci --include=dev",
-  "buildCommand": "npm run build",
+  "buildCommand": "VIRTUAL_REALM_INTEGRATED_API=true npm run build",
   "outputDirectory": "frontend/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:__realm_path*",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/((?!api(?:/|$)|assets(?:/|$)|products(?:/|$))[^.]*)",
+      "destination": "/index.html"
+    }
+  ]
 }

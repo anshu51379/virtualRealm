@@ -2,9 +2,9 @@ const { test, expect } = require("@playwright/test");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
 const request = require("supertest");
-const { createApp } = require("../backend/app");
-const Order = require("../backend/models/orderSchema");
-test("authenticated shopper can register, check out and see purchased products", async ({
+const { createServer } = require("../frontend/server/server");
+const Order = require("../frontend/server/models/orderSchema");
+test("production storefront and real API support customer checkout and seller management", async ({
   page,
 }) => {
   test.setTimeout(60000);
@@ -15,9 +15,11 @@ test("authenticated shopper can register, check out and see purchased products",
   let server;
   try {
     await mongoose.connect(db.getUri());
-    const app = createApp();
+    const app = createServer();
     server = app.listen(0);
     await new Promise((resolve) => server.once("listening", resolve));
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    const open = (path) => page.goto(`${origin}${path}`);
     const api = request(app);
     const seller = (
       await api
@@ -42,17 +44,9 @@ test("authenticated shopper can register, check out and see purchased products",
           description: "Wireless headphones for everyday listening.",
         })
     ).body;
-    await page.route("**/api/**", async (route) => {
-      const path = new URL(route.request().url()).pathname.replace(
-        /^\/api/,
-        "",
-      );
-      const response = await route.fetch({
-        url: `http://127.0.0.1:${server.address().port}${path}`,
-      });
-      await route.fulfill({ response });
-    });
-    await page.goto("/Customerregister");
+    // Use the actual built React app and same-origin HTTP API. No request
+    // interception: broken deployment routing must fail this journey.
+    await open("/Customerregister");
     await page.getByLabel(/Your name/).fill("Realm Shopper");
     await page.getByLabel("Email address").fill("shopper@example.com");
     await page.getByLabel(/Password/).fill("password123");
@@ -62,7 +56,7 @@ test("authenticated shopper can register, check out and see purchased products",
     await expect(
       page.getByRole("button", { name: "Open account menu" }),
     ).toBeVisible();
-    await page.goto(`/product/view/${product._id}`);
+    await open(`/product/view/${product._id}`);
     await page.getByRole("button", { name: "Add to your bag" }).click();
     await page
       .getByRole("button", { name: "Open shopping bag, 1 items" })
@@ -88,9 +82,9 @@ test("authenticated shopper can register, check out and see purchased products",
     await page.getByRole("button", { name: "Open account menu" }).click();
     await page.getByRole("menuitem", { name: "My orders" }).click();
     await expect(page.getByText("Studio Test Headphones")).toBeVisible();
-    await page.goto("/Logout");
+    await open("/Logout");
     await page.getByRole("button", { name: "Log Out", exact: true }).click();
-    await page.goto("/Sellerlogin");
+    await open("/Sellerlogin");
     await page.getByLabel("Email address").fill("seller@example.com");
     await page.getByLabel(/Password/).fill("password123");
     await page.getByRole("button", { name: "Sign in", exact: true }).click();
@@ -110,7 +104,7 @@ test("authenticated shopper can register, check out and see purchased products",
     }
     await page.getByRole("button", { name: "Add", exact: true }).click();
     await expect(page.getByText("Done Successfully")).toBeVisible();
-    await page.goto("/Seller/products");
+    await open("/Seller/products");
     await expect(page.getByText("Seller-created Everyday Bag")).toBeVisible();
   } finally {
     if (server) {

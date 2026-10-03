@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const Customer = require("../models/customerSchema.js");
 const { createNewToken } = require("../utils/token.js");
+const { emailQuery } = require("../services/accounts");
 
 const customerRegister = async (req, res, next) => {
   try {
@@ -30,9 +31,7 @@ const customerRegister = async (req, res, next) => {
       password: hashedPass,
     });
 
-    const existingcustomerByEmail = await Customer.findOne({
-      email: req.body.email.trim().toLowerCase(),
-    });
+    const existingcustomerByEmail = await Customer.findOne(emailQuery(req.body.email));
 
     if (existingcustomerByEmail) {
       res.send({ message: "Email already exists" });
@@ -60,9 +59,7 @@ const customerLogIn = async (req, res, next) => {
       typeof req.body.email === "string" &&
       typeof req.body.password === "string"
     ) {
-      let customer = await Customer.findOne({
-        email: req.body.email.trim().toLowerCase(),
-      });
+      let customer = await Customer.findOne(emailQuery(req.body.email));
       if (customer) {
         const validated = await bcrypt.compare(
           req.body.password,
@@ -75,6 +72,7 @@ const customerLogIn = async (req, res, next) => {
 
           customer = {
             ...customer._doc,
+            role: "Customer",
             token: token,
           };
 

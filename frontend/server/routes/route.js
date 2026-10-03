@@ -1,4 +1,9 @@
 const router = require("express").Router();
+router.param("id", (req, res, next, id) =>
+  require("mongoose").isValidObjectId(id)
+    ? next()
+    : res.status(400).json({ message: "Invalid identifier." }),
+);
 const authMiddleware = require("../middleware/authMiddleware.js");
 const { role, self, productOwner } = require("../middleware/access");
 const seller = [authMiddleware, role("Seller")];

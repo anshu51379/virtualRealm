@@ -18,6 +18,7 @@ jobs:
       - run: npm audit --audit-level=high
       - run: npm test
       - run: npm run build
-      - run: npm run check:frontend-deploy
+      - name: Verify isolated Vercel frontend and API packaging
+        run: npm run check:frontend-deploy
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

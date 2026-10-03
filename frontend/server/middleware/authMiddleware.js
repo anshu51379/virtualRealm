@@ -10,11 +10,12 @@ const authMiddleware = async (req, res, next) => {
       algorithms: ["HS256"],
     });
     // Resolve the role from the database, including for tokens issued by the original app.
-    const user =
-      (await Customer.findById(decoded.userId).select("_id role")) ||
-      (await Seller.findById(decoded.userId).select("_id role"));
+    const customer = await Customer.findById(decoded.userId).select("_id");
+    const user = customer || await Seller.findById(decoded.userId).select("_id");
     if (!user) return res.status(401).json({ message: "Account not found." });
-    req.user = { userId: String(user._id), role: user.role };
+    // The original registration accepted arbitrary role fields. Collection
+    // membership is authoritative, including legacy "Shopcart" sellers.
+    req.user = { userId: String(user._id), role: customer ? "Customer" : "Seller" };
     next();
   } catch {
     res.status(401).json({ message: "Session expired. Please sign in again." });

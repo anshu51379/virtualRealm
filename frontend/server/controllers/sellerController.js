@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const Seller = require("../models/sellerSchema.js");
 const { createNewToken } = require("../utils/token.js");
+const { emailQuery } = require("../services/accounts");
 
 const sellerRegister = async (req, res, next) => {
   try {
@@ -33,9 +34,7 @@ const sellerRegister = async (req, res, next) => {
       password: hashedPass,
     });
 
-    const existingSellerByEmail = await Seller.findOne({
-      email: req.body.email.trim().toLowerCase(),
-    });
+    const existingSellerByEmail = await Seller.findOne(emailQuery(req.body.email));
     const existingShop = await Seller.findOne({ shopName: req.body.shopName });
 
     if (existingSellerByEmail) {
@@ -66,9 +65,7 @@ const sellerLogIn = async (req, res, next) => {
       typeof req.body.email === "string" &&
       typeof req.body.password === "string"
     ) {
-      let seller = await Seller.findOne({
-        email: req.body.email.trim().toLowerCase(),
-      });
+      let seller = await Seller.findOne(emailQuery(req.body.email));
       if (seller) {
         const validated = await bcrypt.compare(
           req.body.password,
@@ -81,6 +78,7 @@ const sellerLogIn = async (req, res, next) => {
 
           seller = {
             ...seller._doc,
+            role: "Seller",
             token: token,
           };
 
