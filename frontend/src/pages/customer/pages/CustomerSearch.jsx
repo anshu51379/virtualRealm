@@ -31,13 +31,15 @@ const CustomerSearch = ({ mode }) => {
                                 variant="outlined"
                                 fullWidth
                                 size="small"
-                                InputProps={{
-                                    style: {
-                                        borderRadius: 0,
-                                    },
-                                }}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                slotProps={{
+                                    input: {
+                                        style: {
+                                            borderRadius: 0,
+                                        },
+                                    }
+                                }}
                             />
                         </SearchContainer>
                         {

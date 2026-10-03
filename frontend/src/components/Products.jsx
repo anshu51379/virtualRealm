@@ -1,160 +1,101 @@
-import React, { useState } from 'react';
-import { Container, Grid, Pagination } from '@mui/material';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../redux/userSlice';
-import { BasicButton } from '../utils/buttonStyles';
-import { useNavigate } from 'react-router-dom';
-import Popup from './Popup';
-import { addStuff } from '../redux/userHandle';
-
-const Products = ({ productData }) => {
-  const dispatch = useDispatch();
-
-  const navigate = useNavigate();
-  const itemsPerPage = 9;
-
-  const { currentRole, responseSearch } = useSelector(state => state.user);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showPopup, setShowPopup] = useState(false);
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Pagination, Snackbar } from "@mui/material";
+import { Add, ArrowOutward } from "@mui/icons-material";
+import { addToCart } from "../redux/userSlice";
+const Products = ({ productData = [], compact = false }) => {
+  const [page, setPage] = useState(1);
   const [message, setMessage] = useState("");
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = productData.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handleAddToCart = (event, product) => {
-    event.stopPropagation();
-    dispatch(addToCart(product));
-  };
-
-  const handleUpload = (event, product) => {
-    event.stopPropagation();
-    console.log(product);
-    dispatch(addStuff("ProductCreate", product));
-  };
-
-  const messageHandler = (event) => {
-    event.stopPropagation();
-    setMessage("You have to login or register first")
-    setShowPopup(true)
-  };
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
-
-  if (responseSearch) {
-    return <div>Product not found</div>;
-  }
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentRole } = useSelector((state) => state.user);
+  useEffect(() => setPage(1), [productData]);
+  const items = compact
+    ? productData.slice(0, 4)
+    : productData.slice((page - 1) * 12, page * 12);
   return (
-    <>
-      <ProductGrid container spacing={3}>
-        {currentItems.map((data, index) => (
-          <Grid item xs={12} sm={6} md={4}
-            key={index}
-            onClick={() => navigate("/product/view/" + data._id)}
-            sx={{ cursor: "pointer" }}
-          >
-            <ProductContainer>
-              <ProductImage src={data.productImage} />
-              <ProductName>{data.productName}</ProductName>
-              <PriceMrp>{data.price.mrp}</PriceMrp>
-              <PriceCost>₹{data.price.cost}</PriceCost>
-              <PriceDiscount>{data.price.discountPercent}% off</PriceDiscount>
-              <AddToCart>
-                {currentRole === "Customer" &&
-                  <>
-                    <BasicButton
-                      onClick={(event) => handleAddToCart(event, data)}
-                    >
-                      Add To Cart
-                    </BasicButton>
-                  </>
-                }
-                {currentRole === "Shopcart" &&
-                  <>
-                    <BasicButton
-                      onClick={(event) => handleUpload(event, data)}
-                    >
-                      Upload
-                    </BasicButton>
-                  </>
-                }
-                {currentRole === null &&
-                  <>
-                    <BasicButton
-                      onClick={messageHandler}
-                    >
-                      Add To Cart
-                    </BasicButton>
-                  </>
-                }
-
-              </AddToCart>
-            </ProductContainer>
-          </Grid>
-        ))}
-      </ProductGrid>
-
-      <Container sx={{ mt: 10, mb: 10, display: "flex", justifyContent: 'center', alignItems: "center" }}>
+    <div className={compact ? "" : "catalog-container"}>
+      {!compact && (
+        <div className="section-heading">
+          <div>
+            <small className="eyebrow">THE REALM COLLECTION</small>
+            <h1>Something for your everyday.</h1>
+          </div>
+          <span className="muted">{productData.length} finds</span>
+        </div>
+      )}
+      {!items.length ? (
+        <div className="empty-state">
+          No products found. Try another search or category.
+        </div>
+      ) : (
+        <div className="product-grid">
+          {items.map((p, i) => (
+            <article className="product-card" key={p._id}>
+              <Link
+                className={`product-art art-${i % 4}`}
+                to={`/product/view/${p._id}`}
+              >
+                <span className="product-category">{p.category}</span>
+                <img
+                  src={p.productImage}
+                  alt={p.productName}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/products/bag.svg";
+                  }}
+                />
+                <span className="product-view" aria-label="View product">
+                  <ArrowOutward fontSize="small" />
+                </span>
+              </Link>
+              <div className="product-info">
+                <p className="muted">
+                  {p.subcategory || "Everyday essentials"}
+                </p>
+                <Link to={`/product/view/${p._id}`}>
+                  <h3>{p.productName}</h3>
+                </Link>
+                <div className="product-bottom">
+                  <span>
+                    <strong>₹{p.price?.cost?.toLocaleString("en-IN")}</strong>
+                    <del>₹{p.price?.mrp?.toLocaleString("en-IN")}</del>
+                  </span>
+                  <Button
+                    size="small"
+                    aria-label={`Add ${p.productName} to bag`}
+                    onClick={() => {
+                      if (currentRole === "Customer") {
+                        dispatch(addToCart(p));
+                        setMessage("Added to your bag");
+                      } else navigate("/Customerlogin");
+                    }}
+                  >
+                    <Add />
+                  </Button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+      {!compact && productData.length > 12 && (
         <Pagination
-          count={Math.ceil(productData.length / itemsPerPage)}
-          page={currentPage}
-          onChange={handlePageChange}
-          color="secondary"
+          count={Math.ceil(productData.length / 12)}
+          page={page}
+          onChange={(e, value) => setPage(value)}
+          sx={{ my: 4, display: "flex", justifyContent: "center" }}
         />
-      </Container>
-
-      <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-    </>
-  )
+      )}
+      <Snackbar
+        open={!!message}
+        autoHideDuration={2500}
+        message={message}
+        onClose={() => setMessage("")}
+      />
+    </div>
+  );
 };
-
 export default Products;
-
-const ProductContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
-`;
-
-const ProductGrid = styled(Grid)`
-  display: flex;
-  align-items: center;
-`;
-
-const ProductImage = styled.img`
-  width: 200px;
-  height: auto;
-  margin-bottom: 8px;
-`;
-
-const ProductName = styled.p`
-  font-weight: bold;
-  text-align: center;
-`;
-
-const PriceMrp = styled.p`
-  margin-top: 8px;
-  text-align: center;
-  text-decoration: line-through;
-  color: #525050;
-`;
-
-const PriceCost = styled.h3`
-  margin-top: 8px;
-  text-align: center;
-`;
-
-const PriceDiscount = styled.p`
-  margin-top: 8px;
-  text-align: center;
-  color: darkgreen;
-`;
-
-const AddToCart = styled.div`
-  margin-top: 16px;
-`;

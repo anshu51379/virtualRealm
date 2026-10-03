@@ -1,0 +1,42 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Virtual Realm Express API, shared by local Node hosting and Vercel",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "demo": "node -e \"process.env.DEMO_MODE='true';require('./index.js')\"",
+    "test": "node --test test/*.test.js",
+    "seed": "node scripts/seed.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.4",
+    "helmet": "^8.3.0",
+    "express-rate-limit": "^8.7.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.1",
+    "mongodb-memory-server": "^11.3.0"
+  },
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "files": [
+    "*.js",
+    "controllers/",
+    "middleware/",
+    "models/",
+    "routes/",
+    "services/",
+    "utils/"
+  ]
+}

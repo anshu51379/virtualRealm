@@ -43,10 +43,10 @@ const AccountMenu = () => {
                 open={open}
                 onClose={handleClose}
                 onClick={handleClose}
-                PaperProps={{
+                slotProps={{ paper: {
                     elevation: 0,
                     sx: styles.styledPaper,
-                }}
+                } }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
