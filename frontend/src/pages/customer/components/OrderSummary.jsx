@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Grid from "@mui/material/GridLegacy";
+import Grid from "@mui/material/Grid";
 import { Box, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -80,7 +80,7 @@ const OrderSummary = ({ handleNext, handleBack }) => {
             </ListItem>
           </List>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography
                 variant="h6"
                 gutterBottom
@@ -132,7 +132,7 @@ const OrderSummary = ({ handleNext, handleBack }) => {
             </ListItem>
           </List>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography
                 variant="h6"
                 gutterBottom

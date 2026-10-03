@@ -62,6 +62,15 @@ test("invalid stored session does not crash the app", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("an empty catalogue is a normal storefront state", async ({ page }) => {
+  await page.route("**/api/getProducts", (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: "[]",
+  }));
+  await page.goto("/");
+  await expect(page.getByText("No products found. Try another search or category.")).toBeVisible();
+  await expect(page.getByRole("alert").filter({ hasText: "The collection could not be loaded." })).toHaveCount(0);
+});
+
 test("an HTML fallback from a missing API shows an error without crashing", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));

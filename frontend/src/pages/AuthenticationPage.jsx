@@ -123,10 +123,12 @@ const AuthenticationPage = ({ mode, role }) => {
             name="password"
             type="password"
             autoComplete={register ? "new-password" : "current-password"}
-            inputProps={{ minLength: register ? 8 : 1, maxLength: 72 }}
             helperText={register ? "Use 8–72 characters." : null}
             required
             fullWidth
+            slotProps={{
+              htmlInput: { minLength: register ? 8 : 1, maxLength: 72 }
+            }}
           />
           {error && <Alert severity="error">{error}</Alert>}
           <Button

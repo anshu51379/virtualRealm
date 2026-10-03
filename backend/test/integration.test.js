@@ -17,6 +17,8 @@ test(
     try {
       await mongoose.connect(db.getUri());
       const api = request(createApp());
+      const emptyCatalogue = await api.get("/getProducts").expect(200);
+      assert.deepEqual(emptyCatalogue.body, []);
       const register = async (role, email) => {
         const result = await api
           .post(`/${role}Register`)

@@ -9,10 +9,12 @@ const AlertDialogSlide = ({ dialog, showDialog, setShowDialog, taskHandler }) =>
     return (
         <Dialog
             open={showDialog}
-            TransitionComponent={Transition}
             keepMounted
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
+            slots={{
+                transition: Transition
+            }}
         >
             <DialogTitle>{dialog}</DialogTitle>
             <DialogContent>

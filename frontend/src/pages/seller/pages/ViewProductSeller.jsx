@@ -223,8 +223,10 @@ const ViewProductSeller = () => {
                               setProductImage(event.target.value)
                             }
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -235,8 +237,10 @@ const ViewProductSeller = () => {
                               setProductName(event.target.value)
                             }
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -248,8 +252,10 @@ const ViewProductSeller = () => {
                               setDescription(event.target.value)
                             }
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -258,8 +264,10 @@ const ViewProductSeller = () => {
                             value={mrp}
                             onChange={(event) => setMrp(event.target.value)}
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -268,8 +276,10 @@ const ViewProductSeller = () => {
                             value={cost}
                             onChange={(event) => setCost(event.target.value)}
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -280,8 +290,10 @@ const ViewProductSeller = () => {
                               setDiscountPercent(event.target.value)
                             }
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -292,8 +304,10 @@ const ViewProductSeller = () => {
                               setCategory(event.target.value)
                             }
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -304,8 +318,10 @@ const ViewProductSeller = () => {
                               setSubcategory(event.target.value)
                             }
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                           <TextField
@@ -314,8 +330,10 @@ const ViewProductSeller = () => {
                             value={tagline}
                             onChange={(event) => setTagline(event.target.value)}
                             required
-                            InputLabelProps={{
-                              shrink: true,
+                            slotProps={{
+                              inputLabel: {
+                                shrink: true,
+                              }
                             }}
                           />
                         </Stack>

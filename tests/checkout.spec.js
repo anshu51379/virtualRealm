@@ -98,9 +98,20 @@ test("authenticated shopper can register, check out and see purchased products",
       page.getByRole("heading", { name: "A clearer view of your shop." }),
     ).toBeVisible();
     await expect(page.locator(".seller-metrics").getByText("₹2,500", { exact: true })).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: "Add a product" }),
-    ).toBeVisible();
+    await page.getByRole("link", { name: "Add a product" }).click();
+    for (const [label, value] of Object.entries({
+      "Product Image URL": "/products/bag.svg",
+      "Product Name": "Seller-created Everyday Bag",
+      "Description": "A bag created from the seller dashboard.",
+      "MRP": "2000", "Cost": "1500", "Discount Percent": "25",
+      "Category": "Accessories", "Subcategory": "Bags", "Tagline": "Everyday carry",
+    })) {
+      await page.getByRole("textbox", { name: label, exact: true }).fill(value);
+    }
+    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await expect(page.getByText("Done Successfully")).toBeVisible();
+    await page.goto("/Seller/products");
+    await expect(page.getByText("Seller-created Everyday Bag")).toBeVisible();
   } finally {
     if (server) {
       server.closeAllConnections();

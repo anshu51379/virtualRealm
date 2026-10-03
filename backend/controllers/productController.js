@@ -29,11 +29,7 @@ const productCreate = async (req, res, next) => {
 const getProducts = async (req, res, next) => {
   try {
     let products = await Product.find().populate("seller", "shopName");
-    if (products.length > 0) {
-      res.send(products);
-    } else {
-      res.send({ message: "No products found" });
-    }
+    res.send(products);
   } catch (err) {
     next(err);
   }

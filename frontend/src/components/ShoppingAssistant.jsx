@@ -72,8 +72,10 @@ export default function ShoppingAssistant() {
               placeholder="Headphones under 3000"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              inputProps={{ maxLength: 500 }}
               required
+              slotProps={{
+                htmlInput: { maxLength: 500 }
+              }}
             />
             <Button
               type="submit"

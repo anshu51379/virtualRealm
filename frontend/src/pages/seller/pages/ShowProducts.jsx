@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, GridLegacy as Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -116,7 +116,7 @@ const ShowProducts = () => {
                 sellerProductData.length > 0 && (
                   <ProductGrid container spacing={3}>
                     {sellerProductData.map((data, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index}>
+                      <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
                         <ProductContainer>
                           <ProductImage src={data.productImage} />
                           <ProductName>{data.productName}</ProductName>

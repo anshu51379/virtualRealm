@@ -16,6 +16,7 @@
     "start": "npm start -w backend",
     "test": "npm test -w backend",
     "test:e2e": "playwright test",
+    "check:frontend-deploy": "node scripts/check-frontend-deploy.mjs",
     "seed": "npm run seed -w backend"
   },
   "devDependencies": {

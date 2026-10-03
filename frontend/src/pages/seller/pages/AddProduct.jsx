@@ -101,8 +101,10 @@ const AddProduct = () => {
                   value={productImage}
                   onChange={(event) => setProductImage(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -111,8 +113,10 @@ const AddProduct = () => {
                   value={productName}
                   onChange={(event) => setProductName(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -122,8 +126,10 @@ const AddProduct = () => {
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -132,8 +138,10 @@ const AddProduct = () => {
                   value={mrp}
                   onChange={(event) => setMrp(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -142,8 +150,10 @@ const AddProduct = () => {
                   value={cost}
                   onChange={(event) => setCost(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -152,8 +162,10 @@ const AddProduct = () => {
                   value={discountPercent}
                   onChange={(event) => setDiscountPercent(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -162,8 +174,10 @@ const AddProduct = () => {
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -172,8 +186,10 @@ const AddProduct = () => {
                   value={subcategory}
                   onChange={(event) => setSubcategory(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
                 <TextField
@@ -182,8 +198,10 @@ const AddProduct = () => {
                   value={tagline}
                   onChange={(event) => setTagline(event.target.value)}
                   required
-                  InputLabelProps={{
-                    shrink: true,
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    }
                   }}
                 />
               </Stack>

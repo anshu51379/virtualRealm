@@ -14,7 +14,7 @@ import {
 import {
   Close,
   ShoppingBagOutlined,
-  PersonOutline,
+  PersonOutlined,
   StorefrontOutlined,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
@@ -82,12 +82,12 @@ const Navbar = () => {
                 aria-label="Open account menu"
                 onClick={(e) => setAccountAnchor(e.currentTarget)}
               >
-                <PersonOutline />
+                <PersonOutlined />
                 <span>{currentUser.name.split(" ")[0]}</span>
               </Button>
             ) : (
               <Link to="/Customerlogin" className="account-link">
-                <PersonOutline />
+                <PersonOutlined />
                 <span>Sign in</span>
               </Link>
             )}

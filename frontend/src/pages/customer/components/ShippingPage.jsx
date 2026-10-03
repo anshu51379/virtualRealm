@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Grid from "@mui/material/GridLegacy";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { Box, Button, Collapse, Stack, styled } from "@mui/material";
@@ -230,8 +230,10 @@ const ShippingPage = ({ handleNext, profile }) => {
                       value={address}
                       onChange={(event) => setAddress(event.target.value)}
                       required
-                      InputLabelProps={{
-                        shrink: true,
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        }
                       }}
                     />
                     <TextField
@@ -240,8 +242,10 @@ const ShippingPage = ({ handleNext, profile }) => {
                       value={city}
                       onChange={(event) => setCity(event.target.value)}
                       required
-                      InputLabelProps={{
-                        shrink: true,
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        }
                       }}
                     />
                     <TextField
@@ -256,8 +260,10 @@ const ShippingPage = ({ handleNext, profile }) => {
                       }
                       onChange={(event) => setPinCode(event.target.value)}
                       required
-                      InputLabelProps={{
-                        shrink: true,
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        }
                       }}
                     />
                     <TextField
@@ -266,8 +272,10 @@ const ShippingPage = ({ handleNext, profile }) => {
                       value={country}
                       onChange={(event) => setCountry(event.target.value)}
                       required
-                      InputLabelProps={{
-                        shrink: true,
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        }
                       }}
                     />
                     <TextField
@@ -276,8 +284,10 @@ const ShippingPage = ({ handleNext, profile }) => {
                       value={state}
                       onChange={(event) => setState(event.target.value)}
                       required
-                      InputLabelProps={{
-                        shrink: true,
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        }
                       }}
                     />
                     <TextField
@@ -292,8 +302,10 @@ const ShippingPage = ({ handleNext, profile }) => {
                       }
                       onChange={(event) => setPhoneNo(event.target.value)}
                       required
-                      InputLabelProps={{
-                        shrink: true,
+                      slotProps={{
+                        inputLabel: {
+                          shrink: true,
+                        }
                       }}
                     />
                   </Stack>
@@ -317,7 +329,7 @@ const ShippingPage = ({ handleNext, profile }) => {
             Shipping address
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 required
                 id="address"
@@ -332,7 +344,7 @@ const ShippingPage = ({ handleNext, profile }) => {
                 helperText={errors.address}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 id="city"
@@ -347,7 +359,7 @@ const ShippingPage = ({ handleNext, profile }) => {
                 helperText={errors.city}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 id="pinCode"
@@ -364,7 +376,7 @@ const ShippingPage = ({ handleNext, profile }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 id="country"
@@ -379,7 +391,7 @@ const ShippingPage = ({ handleNext, profile }) => {
                 helperText={errors.country}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 id="state"
                 name="state"
@@ -393,7 +405,7 @@ const ShippingPage = ({ handleNext, profile }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 required
                 id="phoneNo"

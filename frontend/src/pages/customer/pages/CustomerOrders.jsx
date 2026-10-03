@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/GridLegacy";
+import Grid from "@mui/material/Grid";
 
 import ProductCard from "../components/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -128,7 +128,7 @@ const CustomerOrders = () => {
               <Grid container spacing={3}>
                 {specificProductData &&
                   specificProductData.map((product, index) => (
-                    <Grid item key={index} xs={12} sm={6} md={3}>
+                    <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
                       <ProductCard product={product} />
                     </Grid>
                   ))}

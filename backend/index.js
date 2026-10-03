@@ -1,6 +1,6 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-const { createApp } = require("./app");
+const { createServer } = require("./server");
 async function start() {
   const demo = process.env.DEMO_MODE === "true";
   if (demo && process.env.NODE_ENV === "production")
@@ -19,7 +19,7 @@ async function start() {
     });
     console.log("Connected to MongoDB");
   }
-  const server = createApp({ demo }).listen(process.env.PORT || 5000, () =>
+  const server = createServer({ demo }).listen(process.env.PORT || 5000, () =>
     console.log(
       `Virtual Realm API running (${demo ? "read-only preview" : "database connected"})`,
     ),
