@@ -8,8 +8,8 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const handler = require("../handler");
 const { createApp } = require("../app");
 
-test("deployed API reports configuration failures safely and recovers using legacy collections", { timeout: 120000 }, async () => {
-  const original = { mongo: process.env.MONGO_URL, secret: process.env.SECRET_KEY, demo: process.env.DEMO_MODE };
+test("deployed API handles configuration failures and connects through the MongoDB integration using legacy collections", { timeout: 120000 }, async () => {
+  const original = { mongo: process.env.MONGO_URL, mongoUri: process.env.MONGODB_URI, secret: process.env.SECRET_KEY, demo: process.env.DEMO_MODE };
   const api = request(handler);
   let db;
   let connected = 0;
@@ -17,6 +17,7 @@ test("deployed API reports configuration failures safely and recovers using lega
   mongoose.connection.on("connected", countConnection);
   try {
     delete process.env.MONGO_URL;
+    delete process.env.MONGODB_URI;
     delete process.env.SECRET_KEY;
     delete process.env.DEMO_MODE;
     const missing = await api.get("/api/health").expect(503).expect("Content-Type", /json/);
@@ -28,14 +29,18 @@ test("deployed API reports configuration failures safely and recovers using lega
     assert.equal(preview.body.code, "PREVIEW_DISABLED");
     delete process.env.DEMO_MODE;
     process.env.SECRET_KEY = "legacy-integration-secret-with-at-least-32-characters";
+    db = await MongoMemoryServer.create({ instance: { args: ["--nounixsocket"] } });
+    process.env.MONGODB_URI = db.getUri();
+    // An explicit MONGO_URL wins even when the integration URI is healthy.
     process.env.MONGO_URL = "mongodb://127.0.0.1:1/unavailable";
     const unavailable = await api.get("/api/health").expect(503);
     assert.equal(unavailable.body.code, "DATABASE_UNAVAILABLE");
     assert.ok(!JSON.stringify(unavailable.body).includes(process.env.MONGO_URL));
+    assert.ok(!JSON.stringify(unavailable.body).includes(process.env.MONGODB_URI));
     assert.ok(!JSON.stringify(unavailable.body).includes(process.env.SECRET_KEY));
 
-    db = await MongoMemoryServer.create({ instance: { args: ["--nounixsocket"] } });
-    process.env.MONGO_URL = db.getUri();
+    // A newly attached database needs only the integration's native variable.
+    delete process.env.MONGO_URL;
     const results = await Promise.all(Array.from({ length: 5 }, () => api.get("/api/health").expect(200)));
     assert.equal(connected, 1);
     for (const result of results) assert.equal(result.body.status, "ok");
@@ -96,7 +101,7 @@ test("deployed API reports configuration failures safely and recovers using lega
     mongoose.connection.removeListener("connected", countConnection);
     await mongoose.disconnect();
     if (db) await db.stop();
-    for (const [key, value] of [["MONGO_URL", original.mongo], ["SECRET_KEY", original.secret], ["DEMO_MODE", original.demo]]) {
+    for (const [key, value] of [["MONGO_URL", original.mongo], ["MONGODB_URI", original.mongoUri], ["SECRET_KEY", original.secret], ["DEMO_MODE", original.demo]]) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
   }

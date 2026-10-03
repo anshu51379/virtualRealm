@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const { validateConfiguration } = require("./config");
+const { getMongoUrl, validateConfiguration } = require("./config");
 let pending;
 
 async function connectDatabase() {
   validateConfiguration();
   if (mongoose.connection.readyState === 1) return mongoose;
   if (!pending) {
-    pending = mongoose.connect(process.env.MONGO_URL, {
+    pending = mongoose.connect(getMongoUrl(), {
       maxPoolSize: 5,
       minPoolSize: 0,
       serverSelectionTimeoutMS: 5000,

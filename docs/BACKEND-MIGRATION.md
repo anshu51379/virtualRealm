@@ -65,7 +65,7 @@ Checkout accepts `orderedProducts` containing product `_id` and integer `quantit
 
 ## Runtime configuration and verification
 
-Only the hosting/database owner can supply the private `MONGO_URL` and `SECRET_KEY`; neither repository contains them. Set them in the Vercel project for the deployment environment, ensure database network access, and redeploy. A separate preview database avoids test orders in the live store. `/api/health` must return HTTP 200 and `status: "ok"` before treating deployed commerce as ready.
+Only the hosting/database owner can supply the private MongoDB connection string and `SECRET_KEY`; neither repository contains them. The API and seed command accept `MONGO_URL` or the `MONGODB_URI` supplied by Vercel's MongoDB integration. An explicit `MONGO_URL` takes priority, so remove a stale value when deliberately switching to a fresh integration database. Set the variables in the Vercel project for the deployment environment, ensure database network access, and redeploy. A separate preview database avoids test orders in the live store. `/api/health` must return HTTP 200 and `status: "ok"` before treating deployed commerce as ready.
 
 The Vercel handler shares a MongoDB connection promise across concurrent requests, limits the connection pool, avoids disconnecting after each request, and retries after failed connection attempts. Configuration/connection errors return JSON 503 without leaking connection strings or driver messages. The persistent Node server waits for the database and shuts down gracefully.
 

@@ -1,14 +1,15 @@
-require("../config").loadEnvironment();
+const { loadEnvironment, getMongoUrl } = require("../config");
+loadEnvironment();
 const mongoose = require("mongoose");
 const Seller = require("../models/sellerSchema");
 const Product = require("../models/productSchema");
 const { demoProducts } = require("../services/catalog");
 async function seed() {
-  if (!process.env.MONGO_URL || !process.env.SEED_SELLER_ID)
+  if (!getMongoUrl() || !process.env.SEED_SELLER_ID)
     throw new Error(
-      "Set MONGO_URL and SEED_SELLER_ID for an existing seller. No demo account/password is created.",
+      "Set MONGO_URL (or MONGODB_URI) and SEED_SELLER_ID for an existing seller. No demo account/password is created.",
     );
-  await mongoose.connect(process.env.MONGO_URL);
+  await mongoose.connect(getMongoUrl());
   const seller = await Seller.findById(process.env.SEED_SELLER_ID);
   if (!seller) throw new Error("Seller not found. Register a seller first.");
   for (const product of demoProducts) {

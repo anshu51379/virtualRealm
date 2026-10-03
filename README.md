@@ -31,9 +31,11 @@ In the Vercel project's **Settings → Environment Variables**, configure these 
 
 | Variable | Value |
 | --- | --- |
-| `MONGO_URL` | Your MongoDB/Atlas connection string, including the correct database name |
+| `MONGO_URL` or `MONGODB_URI` | Your MongoDB/Atlas connection string, including the correct database name |
 | `SECRET_KEY` | A random secret of at least 32 characters; retain the old secret if you want existing JWTs to remain valid |
 | `AI_API_KEY`, `AI_MODEL`, `AI_BASE_URL` | Optional server-only AI provider settings |
+
+Vercel's MongoDB integration creates `MONGODB_URI`, which the API and optional seed command accept directly. If both variables are set, `MONGO_URL` takes priority. To attach a fresh integration database, remove any stale `MONGO_URL` in that deployment environment. The integration must be connected to this Vercel project and the intended Preview/Production scopes.
 
 Generate a new secret locally if needed:
 
