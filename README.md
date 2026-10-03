@@ -66,6 +66,14 @@ API integration tests use an isolated ephemeral MongoDB instance, never your con
 
 ## Production hosting
 
+### Vercel storefront
+
+The checked-in `vercel.json` files explicitly select Vite, install locked dependencies including build tools, build the storefront, and provide client-side route rewrites. They support either the repository root or `frontend` as the Vercel project's Root Directory. Use Node 24 and make the workspace root files available when deploying from `frontend`. The output is `frontend/dist` from the repository root, or `dist` from `frontend`; the old CRA `build` directory is no longer used.
+
+Set `VITE_API_URL` to the HTTPS URL of the separately deployed backend (without a trailing slash), then redeploy. The previous public `REACT_APP_BASE_URL` is accepted as a migration fallback; `VITE_API_URL` takes precedence. Set the backend's `CLIENT_ORIGIN` to allow the deployed storefront origin. The local Vite `/api` proxy does not run on Vercel: these configurations deploy the frontend only, and MongoDB/authentication/AI credentials stay in the backend environment. A successful frontend build alone does not establish backend readiness.
+
+If a preview fails, inspect its Vercel build log and confirm that the project's Root Directory is the repository root or `frontend`, Node is 24, and root workspace files are included. Repository configuration overrides legacy framework/build/output commands, but cannot change an incorrect Root Directory or supply missing environment variables.
+
 Run `npm run build` and serve `frontend/dist` from a static host. Configure SPA rewrites to `index.html` and route `/api/*` to the backend with the `/api` prefix removed, or set `VITE_API_URL` before building. Start the API with `npm start`, using production environment variables and MongoDB. Terminate HTTPS at the hosting platform. `/health` reports API/database readiness.
 
 This change does not deploy a live store. Before accepting online payments, integrate a payment gateway with server-verified webhooks. Cash-on-delivery orders are deliberately recorded as **Pending**, and no confirmation emails are claimed or sent. Inventory reservation, fulfillment status editing, refunds, and transactional notifications remain future features. Existing product/order schemas remain compatible; historical payment claims are not rewritten.

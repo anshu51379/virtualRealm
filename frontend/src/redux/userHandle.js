@@ -184,8 +184,10 @@ export const getProducts = () => async (dispatch) => {
     const result = await axios.get(
       `${import.meta.env.VITE_API_URL || "/api"}/getProducts`,
     );
-    if (result.data.message) {
-      dispatch(getProductsFailed(result.data.message));
+    if (!Array.isArray(result.data)) {
+      dispatch(
+        getError(result.data?.message || "The catalogue API is unavailable. Please check the deployed API URL."),
+      );
     } else {
       dispatch(productSuccess(result.data));
     }

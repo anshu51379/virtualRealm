@@ -61,3 +61,16 @@ test("invalid stored session does not crash the app", async ({ page }) => {
     page.getByRole("heading", { name: /A little more/ }),
   ).toBeVisible();
 });
+
+test("an HTML fallback from a missing API shows an error without crashing", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.route("**/api/getProducts", (route) => route.fulfill({
+    status: 200,
+    contentType: "text/html",
+    body: "<!doctype html><html><body>SPA fallback</body></html>",
+  }));
+  await page.goto("/");
+  await expect(page.getByRole("alert").filter({ hasText: "The collection could not be loaded." })).toBeVisible();
+  expect(errors).toEqual([]);
+});
